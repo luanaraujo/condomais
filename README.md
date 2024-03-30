@@ -1,6 +1,6 @@
 # Condo+
 
-Projeto desenvolvido para a disciplina de Extensão do curso de ADS, na UNIFIL.
+Projeto desenvolvido para a disciplina de Extensão do curso de A.D.S, da UNIFIL.
 
 Integrantes:
 
