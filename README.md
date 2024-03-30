@@ -16,7 +16,7 @@ de maneira geral
 
 ## 🚀 Tecnologias
 
-Esse projeto está sendo desenvolvido as seguintes tecnologias para App Mobile:
+Esse projeto está sendo desenvolvido com as seguintes tecnologias para App Mobile:
 
 - React Native
 - Node.js
