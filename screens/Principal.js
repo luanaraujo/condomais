@@ -39,7 +39,7 @@ export default function Principal() {
       }}
     >
       <Tab.Screen
-        name="Feed"
+        name="Tela Inicial"
         component={Feed}
         options={{
           tabBarLabel: "Home",
@@ -49,20 +49,20 @@ export default function Principal() {
         }}
       />
       <Tab.Screen
-        name="Notifications"
+        name="Mural do Condomínio"
         component={Notifications}
         options={{
-          tabBarLabel: "Updates",
+          tabBarLabel: "Mural do Condomínio",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="Perfil"
         component={Profile}
         options={{
-          tabBarLabel: "Profile",
+          tabBarLabel: "Perfil",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={size} />
           ),
