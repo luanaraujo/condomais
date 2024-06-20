@@ -23,7 +23,7 @@ export default function Login({ navigation }) {
   return (
     <View style={[styles.container, specificStyle.specificContainer]}>
       <Image
-        source={require("../assets/condomais.png")} // Substitua pelo caminho da sua logo
+        source={require("../assets/condomais.png")}
         style={specificStyle.logo}
       />
       <Input

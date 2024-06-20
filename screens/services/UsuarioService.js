@@ -12,15 +12,15 @@ class UsuarioService {
       },
     })
       .then((response) => {
-        // Retorne diretamente o response sem transformar os dados
+        // Retorna diretamente o response sem transformar os dados
         return response;
       })
       .catch((error) => {
-        // Retorne diretamente o erro sem transformar os dados
+        // Retorna diretamente o erro sem transformar os dados
         return Promise.reject(error);
       });
   }
 }
 
-const usuarioService = new UsuarioService(); // Criação correta da instância
+const usuarioService = new UsuarioService();
 export default usuarioService;
