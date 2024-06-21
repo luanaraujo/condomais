@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { Text, View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Button } from "react-native-elements";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Feed() {
   return (
@@ -12,10 +13,29 @@ function Feed() {
   );
 }
 
-function Profile() {
+const logout = (navigation) => {
+  AsyncStorage.removeItem("TOKEN");
+  navigation.reset({
+    index: 0,
+    routes: [{ name: "Login" }],
+  });
+};
+
+function Profile({ navigation }) {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Profile!</Text>
+      <Text></Text>
+      <Button
+        title="Logout"
+        icon={{
+          name: "logout",
+          size: 15,
+          color: "white",
+        }}
+        iconContainerStyle={{ marginRight: 10 }}
+        buttonStyle={specificStyle.button}
+        onPress={() => logout(navigation)}
+      />
     </View>
   );
 }
@@ -71,3 +91,19 @@ export default function Principal() {
     </Tab.Navigator>
   );
 }
+
+const specificStyle = StyleSheet.create({
+  button: {
+    backgroundColor: "#4ba7ea",
+    borderRadius: 30,
+    marginHorizontal: 50,
+    marginVertical: 10,
+    height: 50,
+    width: 300,
+  },
+  logo: {
+    width: 150,
+    height: 190,
+    marginBottom: 15,
+  },
+});
