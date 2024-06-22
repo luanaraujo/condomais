@@ -16,11 +16,11 @@ import { Provider } from "react-native-paper";
 import CustomDialog from "../components/CustomDialog";
 
 export default function Cadastro({ navigation }) {
-  const [email, setEmail] = useState(null);
-  const [nome, setNome] = useState(null);
-  const [cpf, setCpf] = useState(null);
-  const [telefone, setTelefone] = useState(null);
-  const [senha, setSenha] = useState(null);
+  const [email, setEmail] = useState("");
+  const [nome, setNome] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [senha, setSenha] = useState("");
   const [isSelected, setIsSelected] = useState(false);
   const [errorEmails, setErrorEmails] = useState(null);
   const [errorNome, setErrorNome] = useState(null);
@@ -30,25 +30,21 @@ export default function Cadastro({ navigation }) {
   const [isLoading, setLoading] = useState(false);
 
   const [visibleDialog, setVisibleDialog] = useState(false);
-  const [titulo, setTitulo] = useState(null);
-  const [mensagem, setMensagem] = useState(null);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogMessage, setDialogMessage] = useState("");
 
   let cpfField = null;
   let telefoneField = null;
 
-  const showDialog = (titulo, mensagem) => {
+  const showDialog = (title, message) => {
+    setDialogTitle(title);
+    setDialogMessage(message);
     setVisibleDialog(true);
-    setTitulo(titulo);
-    setMensagem(mensagem);
   };
 
   const hideDialog = () => {
     setVisibleDialog(false);
-    if (titulo === "Erro") {
-      // Permanecer na tela de cadastro apenas se o título for "Erro"
-      return;
-    } else {
-      // Redirecionar para a tela de login após um cadastro bem-sucedido
+    if (dialogTitle !== "Erro") {
       navigation.navigate("Login");
     }
   };
@@ -66,27 +62,28 @@ export default function Cadastro({ navigation }) {
       setErrorCpf("Preencha o seu CPF corretamente");
       error = true;
     }
-    if (nome == null) {
+    if (!nome.trim()) {
       setErrorNome("Preencha o seu nome");
       error = true;
     }
-    if (telefone == null) {
+    if (!telefone.trim()) {
       setErrorTelefone("Preencha o seu telefone corretamente");
       error = true;
     }
-    if (senha == null) {
+    if (!senha.trim()) {
       setErrorSenha("Preencha a senha");
       error = true;
     }
+
     return !error;
   };
 
   const limparCampos = () => {
-    setEmail(null);
-    setNome(null);
-    setCpf(null);
-    setTelefone(null);
-    setSenha(null);
+    setEmail("");
+    setNome("");
+    setCpf("");
+    setTelefone("");
+    setSenha("");
     setIsSelected(false);
     setErrorEmails(null);
     setErrorNome(null);
@@ -98,7 +95,7 @@ export default function Cadastro({ navigation }) {
   const salvar = () => {
     if (validar()) {
       setLoading(true);
-
+  
       let data = {
         email: email,
         cpf: cpf,
@@ -106,17 +103,27 @@ export default function Cadastro({ navigation }) {
         telefone: telefone,
         senha: senha,
       };
-
+  
+      console.log("Dados enviados para cadastro:", data);
+  
       usuarioService
         .cadastrar(data)
         .then((response) => {
           setLoading(false);
-          const titulo = response.data.status ? "Sucesso" : "Erro";
-          showDialog(titulo, response.data.mensagem, "SUCESSO");
+          console.log("Resposta do cadastro:", response);
+  
+          // Verifique se o status indica sucesso
+          if (response.status === true || response.status === 201) {
+            showDialog("Sucesso", response.mensagem);
+            limparCampos(); // Limpe os campos após sucesso
+          } else {
+            showDialog("Erro", response.mensagem);
+          }
         })
         .catch((error) => {
           setLoading(false);
-          showDialog("Erro", response.data.mensagem);
+          console.error("Erro ao cadastrar:", error);
+          showDialog("Erro", "Houve um erro ao processar sua solicitação");
         });
     }
   };
@@ -227,8 +234,8 @@ export default function Cadastro({ navigation }) {
         </ScrollView>
 
         <CustomDialog
-          titulo={titulo}
-          mensagem={mensagem}
+          titulo={dialogTitle}
+          mensagem={dialogMessage}
           visible={visibleDialog}
           onClose={hideDialog}
         />
