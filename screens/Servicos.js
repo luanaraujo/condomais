@@ -6,28 +6,32 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import servicoService from "./services/ServicoService";
 
 export default function Servicos() {
   const [servicos, setServicos] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    carregarServicos();
-  }, []);
+    if (isFocused) {
+      carregarServicos();
+    }
+  }, [isFocused]);
 
-  const carregarServicos = () => {
+  const carregarServicos = async () => {
     setLoading(true);
-    servicoService
-      .listar()
-      .then((response) => {
-        setServicos(response);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Erro ao carregar serviços:", error);
-        setLoading(false);
-      });
+    try {
+      const response = await servicoService.listar();
+      // Ordena os serviços por ID em ordem decrescente
+      const sortedServices = response.sort((a, b) => b.id - a.id);
+      setServicos(sortedServices);
+      setLoading(false);
+    } catch (error) {
+      console.error("Erro ao carregar lembretes:", error);
+      setLoading(false);
+    }
   };
 
   const renderItem = ({ item }) => (

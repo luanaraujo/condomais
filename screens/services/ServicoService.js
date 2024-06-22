@@ -5,23 +5,23 @@ import Config from "../../util/config";
 class ServicoService {
   async cadastrar(data) {
     let token = await AsyncStorage.getItem("TOKEN");
-    return axios({
-      url: Config.API_URL + "servico",
-      method: "POST",
-      timeout: 5000,
-      data: data,
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + token,
-      },
-    })
-      .then((response) => {
-        return Promise.resolve(response);
-      })
-      .catch((error) => {
-        return Promise.reject(error);
+    try {
+      const response = await axios({
+        url: Config.API_URL + "servico",
+        method: "POST",
+        timeout: 5000,
+        data: data,
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
       });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
+
   async listar() {
     try {
       let token = await AsyncStorage.getItem("TOKEN");
@@ -34,7 +34,7 @@ class ServicoService {
           Authorization: "Bearer " + token,
         },
       });
-      return response.data; // Retorna somente os dados da resposta
+      return response.data;
     } catch (error) {
       throw error;
     }

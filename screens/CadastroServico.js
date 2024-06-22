@@ -33,7 +33,7 @@ export default function CadastroServico() {
     }
 
     if (!descricao) {
-      setErrorDescricao("Preencha a descrição do serviço");
+      setErrorDescricao("Preencha a descrição do lembrete");
       error = true;
     } else {
       setErrorDescricao(null);
@@ -55,14 +55,30 @@ export default function CadastroServico() {
         .cadastrar(data)
         .then((response) => {
           setLoading(false);
-          Alert.alert("Sucesso", response.data.mensagem); // Exibe mensagem de sucesso
+          if (response && response.data && response.data.mensagem) {
+            Alert.alert("Sucesso", response.data.mensagem);
+          } else {
+            Alert.alert("Sucesso", "Lembrete cadastrado com sucesso");
+          }
           // Limpar os campos de texto
           setTitulo(null);
           setDescricao(null);
         })
         .catch((error) => {
           setLoading(false);
-          Alert.alert("Erro", "Houve um erro inesperado");
+          if (error.response) {
+            // O backend retornou um código de erro e dados de resposta
+            console.error("Erro no backend:", error.response.data);
+            Alert.alert("Erro", error.response.data.message); // Exibe mensagem de erro do backend
+          } else if (error.request) {
+            // A requisição foi feita, mas não houve resposta do servidor
+            console.error("Erro de requisição:", error.request);
+            Alert.alert("Erro", "Não foi possível conectar ao servidor");
+          } else {
+            // Outros erros
+            console.error("Erro inesperado:", error.message);
+            Alert.alert("Erro", "Houve um erro inesperado");
+          }
         });
     }
   };

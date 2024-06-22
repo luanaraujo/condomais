@@ -14,36 +14,28 @@ class UsuarioService {
           Accept: "application/json",
         },
       });
-      return response;
+      return response.data;
     } catch (error) {
       console.error(
         "Erro ao cadastrar:",
         error.response ? error.response.data : error.message
       );
-      return Promise.reject(error);
+      throw error;
     }
   }
 
   async login(data) {
     try {
-      const response = await axios({
-        url: Config.API_URL + "usuario/login",
-        method: "POST",
-        timeout: 5000,
-        data: data,
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      const token = response.data.access_token.toString();
+      const response = await axios.post(Config.API_URL + "usuario/login", data);
+      const token = response.data.access_token;
       await AsyncStorage.setItem("TOKEN", token);
-      return response;
+      return response.data;
     } catch (error) {
       console.error(
         "Erro ao fazer login:",
         error.response ? error.response.data : error.message
       );
-      return Promise.reject(error);
+      throw error;
     }
   }
 
@@ -62,7 +54,7 @@ class UsuarioService {
       if (response.data.access_token) {
         const token = response.data.access_token.toString();
         await AsyncStorage.setItem("TOKEN", token);
-        return response;
+        return response.data;
       } else {
         throw new Error("Token inválido na resposta");
       }
@@ -71,11 +63,13 @@ class UsuarioService {
         "Erro ao fazer login com token:",
         error.response ? error.response.data : error.message
       );
-      return Promise.reject(error);
+      throw error;
     }
   }
+
   async getPerfil(token) {
     try {
+      console.log("Token enviado para obter perfil:", token); // Adicione este log
       const response = await axios({
         url: Config.API_URL + "usuario",
         method: "GET",
@@ -84,15 +78,17 @@ class UsuarioService {
           Authorization: "Bearer " + token,
         },
       });
-      return response.data; // Retorna os dados do perfil do usuário
+      console.log("Resposta do perfil:", response.data); // Adicione este log
+      return response.data;
     } catch (error) {
       console.error(
         "Erro ao obter perfil:",
         error.response ? error.response.data : error.message
       );
-      throw new Error("Erro ao obter perfil do usuário");
+      throw error;
     }
   }
+
   async atualizarPerfil(token, { nome, email, cpf, avatar }) {
     try {
       const response = await axios({
@@ -108,13 +104,13 @@ class UsuarioService {
           cpf,
         },
       });
-      return response.data; // Retorna os dados atualizados do perfil do usuário
+      return response.data;
     } catch (error) {
       console.error(
         "Erro ao atualizar perfil:",
         error.response ? error.response.data : error.message
       );
-      throw new Error("Erro ao atualizar perfil do usuário");
+      throw error;
     }
   }
 }

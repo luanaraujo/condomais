@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
@@ -29,25 +28,32 @@ const Perfil = ({ navigation }) => {
   }, []);
 
   const carregarPerfil = async () => {
+    setLoading(true);
     try {
       const token = await AsyncStorage.getItem("TOKEN");
-      const response = await usuarioService.getPerfil(token);
-      setUsuario(response);
-      setName(response.nome);
-      setEmail(response.email);
-      setCpf(response.cpf);
-      setAvatar(response.avatar);
-      setLoading(false);
+      console.log("Token obtido:", token); // Adicione este log
+      if (token) {
+        const response = await usuarioService.getPerfil(token);
+        console.log("Dados do perfil recebidos:", response); // Adicione este log
+        setUsuario(response);
+        setName(response.nome);
+        setEmail(response.email);
+        setCpf(response.cpf);
+        setAvatar(response.avatar);
+      } else {
+        Alert.alert("Erro", "Token não encontrado");
+      }
     } catch (error) {
       console.error("Erro ao carregar perfil:", error.message);
       Alert.alert("Erro", "Erro ao carregar perfil do usuário");
+    } finally {
       setLoading(false);
     }
   };
 
   const logout = async () => {
     try {
-      await AsyncStorage.setItem("TOKEN", "");
+      await AsyncStorage.removeItem("TOKEN");
       navigation.reset({
         index: 0,
         routes: [{ name: "Login" }],
@@ -77,13 +83,17 @@ const Perfil = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       const token = await AsyncStorage.getItem("TOKEN");
-      const data = { nome: name, email: email, cpf: cpf, avatar: avatar };
-      const response = await usuarioService.atualizarPerfil(token, data);
-      if (response) {
-        setUsuario(response);
-        Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
+      if (token) {
+        const data = { nome: name, email: email, cpf: cpf, avatar: avatar };
+        const response = await usuarioService.atualizarPerfil(token, data);
+        if (response) {
+          setUsuario(response);
+          Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
+        } else {
+          Alert.alert("Erro", "Falha ao atualizar perfil");
+        }
       } else {
-        Alert.alert("Erro", "Falha ao atualizar perfil");
+        Alert.alert("Erro", "Token não encontrado");
       }
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error.message);
