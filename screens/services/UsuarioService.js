@@ -74,6 +74,49 @@ class UsuarioService {
       return Promise.reject(error);
     }
   }
+  async getPerfil(token) {
+    try {
+      const response = await axios({
+        url: Config.API_URL + "usuario",
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+      });
+      return response.data; // Retorna os dados do perfil do usuário
+    } catch (error) {
+      console.error(
+        "Erro ao obter perfil:",
+        error.response ? error.response.data : error.message
+      );
+      throw new Error("Erro ao obter perfil do usuário");
+    }
+  }
+  async atualizarPerfil(token, { nome, email, cpf, avatar }) {
+    try {
+      const response = await axios({
+        url: Config.API_URL + "usuario",
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+        data: {
+          nome,
+          email,
+          cpf,
+        },
+      });
+      return response.data; // Retorna os dados atualizados do perfil do usuário
+    } catch (error) {
+      console.error(
+        "Erro ao atualizar perfil:",
+        error.response ? error.response.data : error.message
+      );
+      throw new Error("Erro ao atualizar perfil do usuário");
+    }
+  }
 }
 
 const usuarioService = new UsuarioService();

@@ -124,9 +124,9 @@ export default function Cadastro({ navigation }) {
   return (
     <Provider>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={[specificStyle.specificContainer]}
-        keyboardVerticalOffset={130}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={specificStyle.specificContainer}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 150 : 0}
       >
         <ScrollView style={{ width: "100%" }}>
           <Image
